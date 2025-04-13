@@ -119,32 +119,3 @@
   </script>
 </body>
 </html>
-
-      try {
-        const res = await fetch('', {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
-
-        status.textContent = '✅ 저장 완료!';
-        form.reset();
-      } catch (err) {
-        status.textContent = '⚠️ 저장 실패. 인터넷 확인하거나 관리자에게 문의하세요.';
-      }
-    });
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('✅ Service Worker 등록됨'))
-        .catch(err => console.log('Service Worker 등록 실패:', err));
-    }
-
-    
-
-  </script>
-</body>
-</html>

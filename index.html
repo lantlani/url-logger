@@ -1,19 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="manifest.json">
-  <title>📌 URL Logger</title>
+  <title>📌 URL 기록 앱</title>
   <style>
     body {
-      font-family: sans-serif;
-      margin: 2rem;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);
+      padding: 2rem;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
-    label, input, textarea, button {
+    h1 {
+      text-align: center;
+      font-size: 1.6rem;
+      margin-bottom: 2rem;
+      color: #333;
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
       display: block;
-      margin-bottom: 1rem;
+    }
+    input, textarea {
       width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      box-sizing: border-box;
+      margin-bottom: 1.5rem;
+    }
+    button {
+      background-color: #4a90e2;
+      color: white;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 0.5rem;
+      width: 100%;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #357ab8;
+    }
+    #status {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: bold;
+      color: #4caf50;
     }
   </style>
 </head>
@@ -36,12 +75,13 @@
 
   <script>
     window.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const sharedUrl = params.get('url');
-        if (sharedUrl) {
-            document.getElementById('url').value = decodeURIComponent(sharedUrl);
-        }
+      const params = new URLSearchParams(window.location.search);
+      const sharedUrl = params.get('url');
+      if (sharedUrl) {
+        document.getElementById('url').value = decodeURIComponent(sharedUrl);
+      }
     });
+
     const form = document.getElementById('logForm');
     const status = document.getElementById('status');
 
@@ -52,15 +92,10 @@
       const tags = form.tags.value;
       const date = new Date().toISOString();
 
-      const payload = {
-        url,
-        desc,
-        tags,
-        date,
-      };
-      
+      const payload = { url, desc, tags, date };
+
       try {
-        const res = await fetch('https://script.google.com/macros/s/AKfycbyI2tckWPDxZntECpLYUbcOZWKtw5pTphWGLT02Fzox5smvR6x9LlQ5W0uiJiLYcweh7w/exec', {
+        await fetch('https://script.google.com/macros/s/AKfycbyI2tckWPDxZntECpLYUbcOZWKtw5pTphWGLT02Fzox5smvR6x9LlQ5W0uiJiLYcweh7w/exec', {
           method: 'POST',
           mode: 'no-cors',
           headers: {
@@ -81,6 +116,35 @@
         .then(() => console.log('✅ Service Worker 등록됨'))
         .catch(err => console.log('Service Worker 등록 실패:', err));
     }
+  </script>
+</body>
+</html>
+
+      try {
+        const res = await fetch('', {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        status.textContent = '✅ 저장 완료!';
+        form.reset();
+      } catch (err) {
+        status.textContent = '⚠️ 저장 실패. 인터넷 확인하거나 관리자에게 문의하세요.';
+      }
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('✅ Service Worker 등록됨'))
+        .catch(err => console.log('Service Worker 등록 실패:', err));
+    }
+
+    
+
   </script>
 </body>
 </html>

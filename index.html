@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="manifest.json">
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <title>📌 URL 기록 앱</title>
   <style>
     body {
@@ -55,19 +54,10 @@
       font-weight: bold;
       color: #4caf50;
     }
-    #g_id_onload, .g_id_signin { margin-bottom: 1.5rem; }
   </style>
 </head>
 <body>
   <h1>📎 URL 기록 앱</h1>
-
-  <div id="g_id_onload"
-       data-client_id="671051245340-au66usgk7c87dvs5rlc0naotp6l38rj7.apps.googleusercontent.com"
-       data-auto_prompt="false"
-       data-callback="onGoogleSignIn">
-  </div>
-  <div class="g_id_signin" data-type="standard"></div>
-
   <form id="logForm">
     <label for="url">URL</label>
     <input type="url" id="url" name="url" required />
@@ -84,8 +74,6 @@
   <div id="status"></div>
 
   <script>
-    let googleAccessToken = null;
-
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       const sharedUrl = params.get('url');
@@ -94,20 +82,11 @@
       }
     });
 
-    function onGoogleSignIn(response) {
-      googleAccessToken = response.credential; // JWT ID Token
-      document.getElementById('status').textContent = '🔐 로그인 완료';
-    }
-
     const form = document.getElementById('logForm');
     const status = document.getElementById('status');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (!googleAccessToken) {
-        status.textContent = '⚠️ 먼저 Google 로그인 해주세요';
-        return;
-      }
 
       const url = form.url.value;
       const desc = form.desc.value;
@@ -118,9 +97,9 @@
       try {
         await fetch('https://script.google.com/macros/s/AKfycbw3r-54WDVV2WRJKz58kreePxRJmp8k6RkKGfEyDHumPFq9hyWvPLp97quU6H2VVcyk0w/exec', {
           method: 'POST',
+          mode: 'no-cors',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${googleAccessToken}`
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(payload),
         });
@@ -128,7 +107,7 @@
         status.textContent = '✅ 저장 완료!';
         form.reset();
       } catch (err) {
-        status.textContent = '⚠️ 저장 실패. 로그인 상태 확인 또는 인터넷 확인 필요.';
+        status.textContent = '⚠️ 저장 실패. 인터넷 확인하거나 관리자에게 문의하세요.';
       }
     });
 

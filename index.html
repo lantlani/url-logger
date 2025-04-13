@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json">
+  <title>📌 URL Logger</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+    }
+    label, input, textarea, button {
+      display: block;
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>📎 URL 기록 앱</h1>
+  <form id="logForm">
+    <label for="url">URL</label>
+    <input type="url" id="url" name="url" required />
+
+    <label for="desc">설명</label>
+    <textarea id="desc" name="desc" rows="3" required></textarea>
+
+    <label for="tags">태그 (쉼표로 구분)</label>
+    <input type="text" id="tags" name="tags" />
+
+    <button type="submit">저장하기</button>
+  </form>
+
+  <div id="status"></div>
+
+  <script>
+    const form = document.getElementById('logForm');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = form.url.value;
+      const desc = form.desc.value;
+      const tags = form.tags.value;
+      const date = new Date().toISOString();
+
+      const payload = {
+        url,
+        desc,
+        tags,
+        date,
+      };
+      
+      try {
+        const res = await fetch('https://script.google.com/macros/s/AKfycbyI2tckWPDxZntECpLYUbcOZWKtw5pTphWGLT02Fzox5smvR6x9LlQ5W0uiJiLYcweh7w/exec', {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        status.textContent = '✅ 저장 완료!';
+        form.reset();
+      } catch (err) {
+        status.textContent = '⚠️ 저장 실패. 인터넷 확인하거나 관리자에게 문의하세요.';
+      }
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('✅ Service Worker 등록됨'))
+        .catch(err => console.log('Service Worker 등록 실패:', err));
+    }
+  </script>
+</body>
+</html>

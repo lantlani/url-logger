@@ -35,6 +35,13 @@
   <div id="status"></div>
 
   <script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const sharedUrl = params.get('url');
+        if (sharedUrl) {
+            document.getElementById('url').value = decodeURIComponent(sharedUrl);
+        }
+    });
     const form = document.getElementById('logForm');
     const status = document.getElementById('status');
 

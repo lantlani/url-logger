@@ -63,7 +63,7 @@
     <input type="url" id="url" name="url" required />
 
     <label for="desc">설명</label>
-    <textarea id="desc" name="desc" rows="3" required></textarea>
+    <textarea id="desc" name="desc" rows="3"></textarea>
 
     <label for="tags">태그 (쉼표로 구분)</label>
     <input type="text" id="tags" name="tags" />
@@ -95,7 +95,7 @@
       const payload = { url, desc, tags, date };
 
       try {
-        await fetch('https://script.google.com/macros/s/AKfycbyI2tckWPDxZntECpLYUbcOZWKtw5pTphWGLT02Fzox5smvR6x9LlQ5W0uiJiLYcweh7w/exec', {
+        await fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
           method: 'POST',
           mode: 'no-cors',
           headers: {
